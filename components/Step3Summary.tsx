@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Receipt, Tag, Users, Building2, UserCheck, Calendar, Hash, Percent, DollarSign, Calculator } from 'lucide-react';
+import { Edit, Receipt, Tag, Users, Building2, UserCheck, Calendar, Hash, Percent, Calculator } from 'lucide-react';
 
 interface Step3SummaryProps {
   invoiceData: InvoiceData;
@@ -126,12 +126,12 @@ export function Step3Summary({ invoiceData, onUpdateDiscount, onEditStep }: Step
                   <div className="flex-1">
                     <p className="font-medium text-sm text-emerald-800">{item.description}</p>
                     <p className="text-xs text-gray-600">
-                      {item.quantity} × ${item.rate.toFixed(2)}
+                      {item.quantity} × ₹{item.rate.toFixed(2)}
                       {item.hsnNumber && ` • HSN: ${item.hsnNumber}`}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-emerald-700">${item.total.toFixed(2)}</p>
+                    <p className="font-semibold text-emerald-700">₹{item.total.toFixed(2)}</p>
                   </div>
                 </div>
               ))}
@@ -179,8 +179,8 @@ export function Step3Summary({ invoiceData, onUpdateDiscount, onEditStep }: Step
                         %
                       </SelectItem>
                       <SelectItem value="amount" className="flex items-center gap-2">
-                        <DollarSign className="w-4 h-4" />
-                        $
+                        <span className="font-bold text-lg">₹</span>
+                        ₹
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -191,15 +191,15 @@ export function Step3Summary({ invoiceData, onUpdateDiscount, onEditStep }: Step
             <div className="space-y-3">
               <div className="flex justify-between py-2">
                 <span className="text-gray-600">Subtotal:</span>
-                <span className="font-semibold">${invoiceData.subtotal.toFixed(2)}</span>
+                <span className="font-semibold">₹{invoiceData.subtotal.toFixed(2)}</span>
               </div>
               
               {invoiceData.discount > 0 && (
                 <div className="flex justify-between py-2 text-emerald-600">
                   <span>
-                    Discount ({invoiceData.discountType === 'percentage' ? `${invoiceData.discount}%` : `$${invoiceData.discount}`}):
+                    Discount ({invoiceData.discountType === 'percentage' ? `${invoiceData.discount}%` : `₹${invoiceData.discount}`}):
                   </span>
-                  <span>-${invoiceData.discountAmount.toFixed(2)}</span>
+                  <span>-₹{invoiceData.discountAmount.toFixed(2)}</span>
                 </div>
               )}
               
@@ -208,7 +208,7 @@ export function Step3Summary({ invoiceData, onUpdateDiscount, onEditStep }: Step
                   <Calculator className="w-5 h-5 text-indigo-600" />
                   Net Total:
                 </div>
-                <span className="text-xl sm:text-2xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">${invoiceData.netTotal.toFixed(2)}</span>
+                <span className="text-xl sm:text-2xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">₹{invoiceData.netTotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -256,7 +256,7 @@ export function Step3Summary({ invoiceData, onUpdateDiscount, onEditStep }: Step
             
             <div className="text-right mb-6">
               <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                ${invoiceData.netTotal.toFixed(2)}
+                ₹{invoiceData.netTotal.toFixed(2)}
               </p>
               <p className="text-sm text-gray-600">
                 {invoiceData.items.length} item{invoiceData.items.length !== 1 ? 's' : ''}

@@ -53,7 +53,7 @@ export interface InvoiceData {
 }
 
 const steps = [
-  { id: 1, name: 'Party Information', description: 'From, To & Date details', icon: Users },
+  { id: 1, name: 'Party Information', description: 'Add Basic details', icon: Users },
   { id: 2, name: 'Invoice Items', description: 'Add items and services', icon: ShoppingBag },
   { id: 3, name: 'Summary', description: 'Review and apply discount', icon: Calculator },
   { id: 4, name: 'Confirmation', description: 'Generate invoice', icon: CheckCircle2 },
@@ -64,32 +64,51 @@ export function InvoiceGenerator() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     partyInfo: {
       from: {
-        name: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        phone: '',
-        email: '',
+        name: 'A S Electricals',
+        address: 'Kariyil, Kazhakkoottam, Thiruvananthapuram, Kerala 695301',
+        city: 'Thiruvananthapuram',
+        state: 'Kerala',
+        zipCode: '695301',
+        phone: '095393 31517',
+        email: 'info@aselectricals.com',
       },
       to: {
-        name: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        phone: '',
-        email: '',
+        name: 'Sample Client',
+        address: '123 Main Street, City Center',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        zipCode: '400001',
+        phone: '+91 98765 43210',
+        email: 'client@example.com',
       },
       date: new Date().toISOString().split('T')[0],
       invoiceNumber: `INV-${Date.now()}`,
     },
-    items: [],
-    discount: 0,
+    items: [
+      {
+        id: '1',
+        itemNumber: '1',
+        description: 'Electrical Installation Service',
+        hsnNumber: '998314',
+        rate: 1500,
+        quantity: 1,
+        total: 1500,
+      },
+      {
+        id: '2',
+        itemNumber: '2',
+        description: 'Wiring and Cable Work',
+        hsnNumber: '998314',
+        rate: 800,
+        quantity: 2,
+        total: 1600,
+      }
+    ],
+    discount: 10,
     discountType: 'percentage',
-    subtotal: 0,
-    discountAmount: 0,
-    netTotal: 0,
+    subtotal: 3100,
+    discountAmount: 310,
+    netTotal: 2790,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2, ShoppingBag, Package, FileText, Hash, DollarSign, Calculator } from 'lucide-react';
+import { Plus, Trash2, ShoppingBag, Package, FileText, Hash, Calculator } from 'lucide-react';
 
 interface Step2InvoiceItemsProps {
   items: InvoiceItem[];
@@ -148,7 +148,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                       <div className="grid grid-cols-3 gap-3">
                         <div>
                           <Label className="flex items-center gap-2 text-sm font-medium">
-                            <DollarSign className="w-4 h-4 text-violet-500" />
+                            <span className="text-violet-500 font-bold text-lg">₹</span>
                             Rate *
                           </Label>
                           <Input
@@ -184,7 +184,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                             Total
                           </Label>
                           <div className="px-3 py-2 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-200 rounded-lg font-semibold text-violet-700">
-                            ${item.total.toFixed(2)}
+                            ₹{item.total.toFixed(2)}
                           </div>
                         </div>
                       </div>
@@ -243,7 +243,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                       </div>
                       <div className="col-span-1">
                         <div className="px-3 py-2 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-200 rounded-lg font-semibold text-violet-700">
-                          ${item.total.toFixed(2)}
+                          ₹{item.total.toFixed(2)}
                         </div>
                       </div>
                       <div className="col-span-1">
@@ -272,7 +272,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
 
                   <div className="text-center sm:text-right order-1 sm:order-2">
                     <p className="text-sm text-gray-600">Subtotal</p>
-                    <p className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">${subtotal.toFixed(2)}</p>
+                    <p className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">₹{subtotal.toFixed(2)}</p>
                   </div>
                 </div>
               </>

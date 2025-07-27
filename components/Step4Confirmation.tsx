@@ -99,17 +99,17 @@ export function Step4Confirmation({ invoiceData }: Step4ConfirmationProps) {
               <div className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>${invoiceData.subtotal.toFixed(2)}</span>
+                  <span>₹{invoiceData.subtotal.toFixed(2)}</span>
                 </div>
                 {invoiceData.discount > 0 && (
                   <div className="flex justify-between text-sm text-emerald-600">
                     <span>Discount:</span>
-                    <span>-${invoiceData.discountAmount.toFixed(2)}</span>
+                    <span>-₹{invoiceData.discountAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-lg pt-2 border-t border-emerald-200">
                   <span>Total:</span>
-                  <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">${invoiceData.netTotal.toFixed(2)}</span>
+                  <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">₹{invoiceData.netTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
