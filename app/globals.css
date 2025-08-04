@@ -102,3 +102,56 @@
     border-radius: 2px;
   }
 }
+
+/* Custom animations and effects */
+@layer components {
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/80 border border-white/20;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+  
+  .gradient-border {
+    @apply border border-transparent bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 bg-clip-border;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-xl;
+  }
+  
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-glow {
+  from {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Colorful accent classes */
+.colorful-1 { @apply bg-gradient-to-br from-pink-400 to-rose-500; }
+.colorful-2 { @apply bg-gradient-to-br from-blue-400 to-indigo-500; }
+.colorful-3 { @apply bg-gradient-to-br from-green-400 to-emerald-500; }
+.colorful-4 { @apply bg-gradient-to-br from-yellow-400 to-orange-500; }
+.colorful-5 { @apply bg-gradient-to-br from-purple-400 to-violet-500; }
+.colorful-6 { @apply bg-gradient-to-br from-cyan-400 to-teal-500; }

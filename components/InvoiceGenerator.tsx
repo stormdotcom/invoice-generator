@@ -220,22 +220,34 @@ export function InvoiceGenerator() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-violet-100">
-        <div className="p-4 sm:p-6 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">
-          <StepperIndicator steps={steps} currentStep={currentStep} />
+    <div className="max-w-5xl mx-auto">
+      <div className="glass-effect rounded-3xl shadow-2xl overflow-hidden border border-white/30">
+        {/* Enhanced header with gradient */}
+        <div className="relative p-6 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 overflow-hidden">
+          {/* Background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full translate-x-12 translate-y-12"></div>
+            <div className="absolute top-1/2 left-1/2 w-16 h-16 bg-white rounded-full -translate-x-8 -translate-y-8"></div>
+          </div>
+          
+          <div className="relative z-10">
+            <StepperIndicator steps={steps} currentStep={currentStep} />
+          </div>
         </div>
         
-        <div className="p-4 sm:p-6 lg:p-8">
+        {/* Content area with enhanced padding */}
+        <div className="p-6 lg:p-8 bg-white/95 backdrop-blur-sm">
           {renderStep()}
         </div>
 
-        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gradient-to-r from-gray-50 to-violet-50 border-t border-violet-100 flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
+        {/* Enhanced footer with glass effect */}
+        <div className="px-6 lg:px-8 py-6 bg-gradient-to-r from-gray-50/80 to-violet-50/80 backdrop-blur-sm border-t border-white/30 flex flex-col sm:flex-row justify-between gap-4">
           <Button
             variant="outline"
             onClick={handleBack}
             disabled={currentStep === 1}
-            className="flex items-center justify-center gap-2 order-2 sm:order-1 border-violet-200 hover:bg-violet-50"
+            className="flex items-center justify-center gap-2 order-2 sm:order-1 border-violet-200 hover:bg-violet-50/80 hover-lift transition-all duration-300"
           >
             <ChevronLeft className="w-4 h-4" />
             Back
@@ -244,7 +256,7 @@ export function InvoiceGenerator() {
           {currentStep < 4 ? (
             <Button
               onClick={handleNext}
-              className="flex items-center justify-center gap-2 order-1 sm:order-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg"
+              className="flex items-center justify-center gap-2 order-1 sm:order-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg hover-lift transition-all duration-300 text-white font-medium"
             >
               Next
               <ChevronRight className="w-4 h-4" />

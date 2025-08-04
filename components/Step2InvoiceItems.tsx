@@ -52,35 +52,47 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
   const subtotal = items.reduce((sum, item) => sum + item.total, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="text-center mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Invoice Items</h2>
-        <p className="text-gray-600 mt-2 text-sm sm:text-base">Add items and services to your invoice</p>
+        <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-3">
+          Invoice Items
+        </h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          Add items and services to your invoice with detailed information
+        </p>
       </div>
 
-      <Card className="border-2 border-violet-100 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-violet-700">
-            <ShoppingBag className="w-5 h-5" />
+      <Card className="glass-effect rounded-2xl shadow-lg border-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-5">
+          <CardTitle className="flex items-center gap-3 text-green-700 text-lg font-semibold">
+            <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl text-white">
+              <ShoppingBag className="w-5 h-5" />
+            </div>
             Items & Services
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-green-600">
             Add all items, products, or services for this invoice
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-6 py-6 bg-white/50">
           {errors['items'] && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{errors['items']}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-red-600 text-sm flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                {errors['items']}
+              </p>
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {items.length === 0 ? (
-              <div className="text-center py-8 sm:py-12 border-2 border-dashed border-violet-200 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50">
-                <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-violet-400 mx-auto mb-4" />
-                <p className="text-gray-500 mb-4">No items added yet</p>
-                <Button onClick={addItem} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg">
+              <div className="text-center py-12 border-2 border-dashed border-green-200 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 hover-lift transition-all duration-300">
+                <ShoppingBag className="w-16 h-16 text-green-400 mx-auto mb-4" />
+                <p className="text-gray-500 mb-6 text-lg">No items added yet</p>
+                <Button 
+                  onClick={addItem} 
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg hover-lift transition-all duration-300 text-white font-medium"
+                >
                   <Plus className="w-5 h-5 mr-2" />
                   Add First Item
                 </Button>
@@ -88,7 +100,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
             ) : (
               <>
                 {/* Table Header */}
-                <div className="hidden lg:grid lg:grid-cols-12 gap-4 pb-3 border-b-2 border-violet-100 font-semibold text-violet-700 text-sm">
+                <div className="hidden lg:grid lg:grid-cols-12 gap-4 pb-4 border-b-2 border-green-100 font-semibold text-green-700 text-sm">
                   <div className="col-span-1">Item #</div>
                   <div className="col-span-4">Description</div>
                   <div className="col-span-2">HSN Number</div>
@@ -99,11 +111,11 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
 
                 {/* Items */}
                 {items.map((item, index) => (
-                  <div key={item.id} className="border-2 border-violet-100 rounded-xl p-4 space-y-4 lg:space-y-0 bg-gradient-to-br from-white to-violet-50 shadow-sm hover:shadow-md transition-shadow">
+                  <div key={item.id} className="glass-effect rounded-2xl p-6 space-y-6 lg:space-y-0 shadow-lg hover-lift transition-all duration-300">
                     {/* Mobile Layout */}
-                    <div className="lg:hidden space-y-3">
+                    <div className="lg:hidden space-y-4">
                       <div className="flex justify-between items-center">
-                        <h4 className="font-semibold text-violet-700 flex items-center gap-2">
+                        <h4 className="font-semibold text-green-700 flex items-center gap-2">
                           <Package className="w-4 h-4" />
                           Item #{item.itemNumber}
                         </h4>
@@ -111,79 +123,89 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           variant="outline"
                           size="sm"
                           onClick={() => removeItem(item.id)}
-                          className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 hover-lift transition-all duration-200"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                       
                       <div>
-                        <Label className="flex items-center gap-2 text-sm font-medium">
-                          <FileText className="w-4 h-4 text-violet-500" />
+                        <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <FileText className="w-4 h-4 text-green-500" />
                           Description *
                         </Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                          className={errors[`items.${index}.description`] ? 'border-red-500' : ''}
+                          className={`${errors[`items.${index}.description`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                           placeholder="Item description"
                         />
                         {errors[`items.${index}.description`] && (
-                          <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.description`]}</p>
+                          <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                            {errors[`items.${index}.description`]}
+                          </p>
                         )}
                       </div>
 
                       <div>
-                        <Label className="flex items-center gap-2 text-sm font-medium">
-                          <Hash className="w-4 h-4 text-violet-500" />
+                        <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <Hash className="w-4 h-4 text-green-500" />
                           HSN Number
                         </Label>
                         <Input
                           value={item.hsnNumber}
                           onChange={(e) => updateItem(item.id, 'hsnNumber', e.target.value)}
                           placeholder="HSN Code"
+                          className="border-gray-200 focus:border-green-500 transition-colors duration-200"
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-4">
                         <div>
-                          <Label className="flex items-center gap-2 text-sm font-medium">
-                            <span className="text-violet-500 font-bold text-lg">₹</span>
+                          <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                            <span className="text-green-500 font-bold text-lg">₹</span>
                             Rate *
                           </Label>
                           <Input
                             type="number"
                             value={item.rate}
                             onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
-                            className={errors[`items.${index}.rate`] ? 'border-red-500' : ''}
+                            className={`${errors[`items.${index}.rate`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                             placeholder="0.00"
                           />
                           {errors[`items.${index}.rate`] && (
-                            <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.rate`]}</p>
+                            <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                              <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                              {errors[`items.${index}.rate`]}
+                            </p>
                           )}
                         </div>
                         <div>
-                          <Label className="flex items-center gap-2 text-sm font-medium">
-                            <Package className="w-4 h-4 text-violet-500" />
+                          <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                            <Package className="w-4 h-4 text-green-500" />
                             Qty *
                           </Label>
                           <Input
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
-                            className={errors[`items.${index}.quantity`] ? 'border-red-500' : ''}
+                            className={`${errors[`items.${index}.quantity`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                             placeholder="1"
                           />
                           {errors[`items.${index}.quantity`] && (
-                            <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.quantity`]}</p>
+                            <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                              <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                              {errors[`items.${index}.quantity`]}
+                            </p>
                           )}
                         </div>
                         <div>
-                          <Label className="flex items-center gap-2 text-sm font-medium">
-                            <Calculator className="w-4 h-4 text-violet-500" />
+                          <Label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                            <Calculator className="w-4 h-4 text-green-500" />
                             Total
                           </Label>
-                          <div className="px-3 py-2 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-200 rounded-lg font-semibold text-violet-700">
+                          <div className="px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl font-semibold text-green-700 text-center">
                             ₹{item.total.toFixed(2)}
                           </div>
                         </div>
@@ -197,17 +219,21 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           value={item.itemNumber}
                           onChange={(e) => updateItem(item.id, 'itemNumber', e.target.value)}
                           placeholder="#"
+                          className="border-gray-200 focus:border-green-500 transition-colors duration-200"
                         />
                       </div>
                       <div className="col-span-4">
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                          className={errors[`items.${index}.description`] ? 'border-red-500' : ''}
+                          className={`${errors[`items.${index}.description`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                           placeholder="Item description"
                         />
                         {errors[`items.${index}.description`] && (
-                          <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.description`]}</p>
+                          <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                            {errors[`items.${index}.description`]}
+                          </p>
                         )}
                       </div>
                       <div className="col-span-2">
@@ -215,6 +241,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           value={item.hsnNumber}
                           onChange={(e) => updateItem(item.id, 'hsnNumber', e.target.value)}
                           placeholder="HSN Code"
+                          className="border-gray-200 focus:border-green-500 transition-colors duration-200"
                         />
                       </div>
                       <div className="col-span-2">
@@ -222,11 +249,14 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           type="number"
                           value={item.rate}
                           onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
-                          className={errors[`items.${index}.rate`] ? 'border-red-500' : ''}
+                          className={`${errors[`items.${index}.rate`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                           placeholder="0.00"
                         />
                         {errors[`items.${index}.rate`] && (
-                          <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.rate`]}</p>
+                          <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                            {errors[`items.${index}.rate`]}
+                          </p>
                         )}
                       </div>
                       <div className="col-span-1">
@@ -234,15 +264,18 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
-                          className={errors[`items.${index}.quantity`] ? 'border-red-500' : ''}
+                          className={`${errors[`items.${index}.quantity`] ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-green-500'} transition-colors duration-200`}
                           placeholder="1"
                         />
                         {errors[`items.${index}.quantity`] && (
-                          <p className="text-red-500 text-sm mt-1">{errors[`items.${index}.quantity`]}</p>
+                          <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                            {errors[`items.${index}.quantity`]}
+                          </p>
                         )}
                       </div>
                       <div className="col-span-1">
-                        <div className="px-3 py-2 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-200 rounded-lg font-semibold text-violet-700">
+                        <div className="px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl font-semibold text-green-700 text-center">
                           ₹{item.total.toFixed(2)}
                         </div>
                       </div>
@@ -251,7 +284,7 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                           variant="outline"
                           size="sm"
                           onClick={() => removeItem(item.id)}
-                          className="text-red-600 hover:text-red-700 w-full border-red-200 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 w-full border-red-200 hover:bg-red-50 hover-lift transition-all duration-200"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -260,19 +293,19 @@ export function Step2InvoiceItems({ items, onUpdate, errors }: Step2InvoiceItems
                   </div>
                 ))}
 
-                <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t-2 border-violet-100 gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t-2 border-green-100 gap-6">
                   <Button
                     variant="outline"
                     onClick={addItem}
-                    className="flex items-center gap-2 border-violet-200 hover:bg-violet-50 order-2 sm:order-1"
+                    className="flex items-center gap-2 border-green-200 hover:bg-green-50 order-2 sm:order-1 hover-lift transition-all duration-300"
                   >
                     <Plus className="w-4 h-4" />
                     Add Item
                   </Button>
 
                   <div className="text-center sm:text-right order-1 sm:order-2">
-                    <p className="text-sm text-gray-600">Subtotal</p>
-                    <p className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">₹{subtotal.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600 mb-1">Subtotal</p>
+                    <p className="text-3xl font-bold gradient-text">₹{subtotal.toFixed(2)}</p>
                   </div>
                 </div>
               </>
