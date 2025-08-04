@@ -1,197 +1,297 @@
 'use client';
 
+import { useState } from 'react';
 import { InvoiceData } from './InvoiceGenerator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Download, FileText, Mail, Printer, Sparkles, Calendar, Hash, Building2, UserCheck } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  CheckCircle2, 
+  Download, 
+  FileText, 
+  Mail, 
+  Share2, 
+  Printer, 
+  Eye,
+  Settings,
+  Template
+} from 'lucide-react';
+import { generateInvoicePDF, createPDFGenerator } from '@/lib/pdf-generator';
+import { TemplateManager } from '@/lib/template-manager';
 
 interface Step4ConfirmationProps {
   invoiceData: InvoiceData;
 }
 
 export function Step4Confirmation({ invoiceData }: Step4ConfirmationProps) {
-  const handleGenerateInvoice = () => {
-    // This is where you would integrate with your document generation service
-    console.log('Generating invoice with data:', invoiceData);
-    
-    // For demo purposes, we'll just show an alert
-    alert('Invoice generation would be implemented here!\n\nData has been logged to console.');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('modern-invoice');
+  const [generatedPDFPath, setGeneratedPDFPath] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const templateManager = new TemplateManager();
+  const availableTemplates = templateManager.getAllTemplates();
+
+  const handleGeneratePDF = async () => {
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      // Create custom fields for additional data
+      const customFields = {
+        'generated_date': new Date().toLocaleDateString(),
+        'generated_time': new Date().toLocaleTimeString(),
+        'template_used': selectedTemplate,
+        'total_items': invoiceData.items.length,
+        'payment_terms': 'Net 30',
+        'notes': 'Thank you for your business!'
+      };
+
+      // Generate PDF using the selected template
+      const pdfPath = await generateInvoicePDF(
+        invoiceData,
+        `./templates/${selectedTemplate}.docx`,
+        `./invoices/invoice-${invoiceData.partyInfo.invoiceNumber}.pdf`
+      );
+
+      setGeneratedPDFPath(pdfPath);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate PDF');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDownloadPDF = () => {
-    console.log('Downloading PDF...');
-    alert('PDF download would be implemented here!');
-  };
-
-  const handleEmailInvoice = () => {
-    console.log('Emailing invoice...');
-    alert('Email functionality would be implemented here!');
+    if (generatedPDFPath) {
+      // Create a download link
+      const link = document.createElement('a');
+      link.href = generatedPDFPath;
+      link.download = `invoice-${invoiceData.partyInfo.invoiceNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   const handlePrintInvoice = () => {
-    console.log('Printing invoice...');
     window.print();
   };
 
+  const handleEmailInvoice = () => {
+    // This would integrate with email service
+    const subject = `Invoice ${invoiceData.partyInfo.invoiceNumber} from ${invoiceData.partyInfo.from.name}`;
+    const body = `Please find attached invoice ${invoiceData.partyInfo.invoiceNumber} for ${invoiceData.partyInfo.to.name}.`;
+    
+    const mailtoLink = `mailto:${invoiceData.partyInfo.to.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="text-center mb-8">
-        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full flex items-center justify-center mb-4 relative">
-          <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600" />
-          <Sparkles className="w-4 h-4 text-amber-400 absolute -top-1 -right-1 animate-pulse" />
+        <div className="flex items-center justify-center mb-4">
+          <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full text-white">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Invoice Ready!</h2>
-        <p className="text-gray-600 mt-2 text-sm sm:text-base">Your invoice has been prepared and is ready to generate</p>
+        <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-3">
+          Invoice Generated Successfully!
+        </h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          Your invoice has been created and is ready for download, printing, or sharing.
+        </p>
       </div>
 
-      {/* Final Invoice Summary */}
-      <Card className="border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-emerald-700">
-            <FileText className="w-5 h-5" />
-            Final Invoice Summary
-          </CardTitle>
-          <CardDescription>Review your complete invoice details</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-semibold text-emerald-700 flex items-center gap-2 mb-2">
-                  <FileText className="w-4 h-4" />
-                  Invoice Details
-                </h4>
-                <p className="text-sm flex items-center gap-2">
-                  <Hash className="w-3 h-3 text-emerald-500" />
-                  Invoice #: {invoiceData.partyInfo.invoiceNumber}
-                </p>
-                <p className="text-sm flex items-center gap-2">
-                  <Calendar className="w-3 h-3 text-emerald-500" />
-                  Date: {new Date(invoiceData.partyInfo.date).toLocaleDateString()}
-                </p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-emerald-700 flex items-center gap-2 mb-1">
-                  <Building2 className="w-4 h-4" />
-                  From
-                </h4>
-                <p className="text-sm font-medium">{invoiceData.partyInfo.from.name}</p>
-                <p className="text-sm text-gray-600">{invoiceData.partyInfo.from.email}</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-emerald-700 flex items-center gap-2 mb-1">
-                  <UserCheck className="w-4 h-4" />
-                  To
-                </h4>
-                <p className="text-sm font-medium">{invoiceData.partyInfo.to.name}</p>
-                <p className="text-sm text-gray-600">{invoiceData.partyInfo.to.email}</p>
-              </div>
+      {/* Template Selection */}
+      <Card className="glass-effect rounded-2xl shadow-lg border-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50 px-6 py-5">
+          <CardTitle className="flex items-center gap-3 text-purple-700 text-lg font-semibold">
+            <div className="p-2 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl text-white">
+              <Template className="w-5 h-5" />
             </div>
-            
-            <div className="space-y-3">
-              <div>
-                <h4 className="font-semibold text-emerald-700 mb-1">Items</h4>
-                <p className="text-sm">{invoiceData.items.length} item{invoiceData.items.length !== 1 ? 's' : ''}</p>
-              </div>
-              
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span>Subtotal:</span>
-                  <span>₹{invoiceData.subtotal.toFixed(2)}</span>
+            Choose Template
+          </CardTitle>
+          <CardDescription className="text-purple-600">
+            Select a template for your invoice design
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="px-6 py-6 bg-white/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {availableTemplates.map((template) => (
+              <div
+                key={template.name}
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover-lift ${
+                  selectedTemplate === template.name
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 bg-white hover:border-purple-300'
+                }`}
+                onClick={() => setSelectedTemplate(template.name)}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <FileText className="w-5 h-5 text-purple-500" />
+                  <h4 className="font-semibold text-gray-800">{template.name.replace('-', ' ').toUpperCase()}</h4>
                 </div>
-                {invoiceData.discount > 0 && (
-                  <div className="flex justify-between text-sm text-emerald-600">
-                    <span>Discount:</span>
-                    <span>-₹{invoiceData.discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold text-lg pt-2 border-t border-emerald-200">
-                  <span>Total:</span>
-                  <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">₹{invoiceData.netTotal.toFixed(2)}</span>
+                <p className="text-sm text-gray-600 mb-3">{template.description}</p>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-xs">
+                    {template.category}
+                  </Badge>
+                  {template.styles?.layout && (
+                    <Badge variant="outline" className="text-xs">
+                      {template.styles.layout}
+                    </Badge>
+                  )}
                 </div>
               </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Invoice Summary */}
+      <Card className="glass-effect rounded-2xl shadow-lg border-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-5">
+          <CardTitle className="flex items-center gap-3 text-blue-700 text-lg font-semibold">
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl text-white">
+              <FileText className="w-5 h-5" />
+            </div>
+            Invoice Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-6 py-6 bg-white/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Invoice Number</p>
+              <p className="text-lg font-semibold text-gray-800">{invoiceData.partyInfo.invoiceNumber}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Client</p>
+              <p className="text-lg font-semibold text-gray-800">{invoiceData.partyInfo.to.name}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Items</p>
+              <p className="text-lg font-semibold text-gray-800">{invoiceData.items.length}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Total Amount</p>
+              <p className="text-lg font-semibold gradient-text">₹{invoiceData.netTotal.toFixed(2)}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Action Buttons */}
-      <Card className="border-2 border-violet-100 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-violet-700">Generate & Export Options</CardTitle>
-          <CardDescription>Choose how you want to handle your invoice</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button
+          onClick={handleGeneratePDF}
+          disabled={isGenerating}
+          className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg hover-lift transition-all duration-300 text-white font-medium"
+        >
+          {isGenerating ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Generating...
+            </>
+          ) : (
+            <>
+              <Download className="w-4 h-4" />
+              Generate PDF
+            </>
+          )}
+        </Button>
+
+        {generatedPDFPath && (
+          <>
             <Button
-              onClick={handleGenerateInvoice}
-              className="flex flex-col items-center gap-2 h-auto py-4 sm:py-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg text-xs sm:text-sm"
-            >
-              <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span>Generate Invoice</span>
-            </Button>
-            
-            <Button
-              variant="outline"
               onClick={handleDownloadPDF}
-              className="flex flex-col items-center gap-2 h-auto py-4 sm:py-6 border-violet-200 hover:bg-violet-50 text-xs sm:text-sm"
-            >
-              <Download className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span>Download PDF</span>
-            </Button>
-            
-            <Button
               variant="outline"
-              onClick={handleEmailInvoice}
-              className="flex flex-col items-center gap-2 h-auto py-4 sm:py-6 border-violet-200 hover:bg-violet-50 text-xs sm:text-sm"
+              className="flex items-center gap-2 border-green-200 hover:bg-green-50 hover-lift transition-all duration-300"
             >
-              <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span>Email Invoice</span>
+              <Download className="w-4 h-4" />
+              Download PDF
             </Button>
-            
+
             <Button
-              variant="outline"
               onClick={handlePrintInvoice}
-              className="flex flex-col items-center gap-2 h-auto py-4 sm:py-6 border-violet-200 hover:bg-violet-50 text-xs sm:text-sm"
+              variant="outline"
+              className="flex items-center gap-2 border-blue-200 hover:bg-blue-50 hover-lift transition-all duration-300"
             >
-              <Printer className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span>Print Invoice</span>
+              <Printer className="w-4 h-4" />
+              Print
+            </Button>
+
+            <Button
+              onClick={handleEmailInvoice}
+              variant="outline"
+              className="flex items-center gap-2 border-purple-200 hover:bg-purple-50 hover-lift transition-all duration-300"
+            >
+              <Mail className="w-4 h-4" />
+              Email
+            </Button>
+
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-gray-200 hover:bg-gray-50 hover-lift transition-all duration-300"
+            >
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <p className="text-red-600 text-sm flex items-center gap-2">
+              <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+              {error}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Success Message */}
+      {generatedPDFPath && (
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-4">
+            <p className="text-green-600 text-sm flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              PDF generated successfully! You can now download, print, or share your invoice.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Additional Options */}
+      <Card className="glass-effect rounded-2xl shadow-lg border-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50 px-6 py-5">
+          <CardTitle className="flex items-center gap-3 text-gray-700 text-lg font-semibold">
+            <div className="p-2 bg-gradient-to-br from-gray-500 to-slate-500 rounded-xl text-white">
+              <Settings className="w-5 h-5" />
+            </div>
+            Additional Options
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-6 py-6 bg-white/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Button variant="outline" className="flex items-center gap-2 justify-start">
+              <Eye className="w-4 h-4" />
+              Preview Invoice
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2 justify-start">
+              <Template className="w-4 h-4" />
+              Customize Template
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2 justify-start">
+              <FileText className="w-4 h-4" />
+              Save as Draft
             </Button>
           </div>
         </CardContent>
       </Card>
-
-      {/* Data Summary for Development */}
-      <Card className="bg-gradient-to-r from-gray-50 to-violet-50 border border-violet-100">
-        <CardHeader>
-          <CardTitle className="text-sm font-medium text-violet-700">Developer Information</CardTitle>
-          <CardDescription className="text-xs">
-            This data would be passed to your document generation service
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <details className="text-xs">
-            <summary className="cursor-pointer font-medium mb-2">View Invoice Data Structure</summary>
-            <pre className="bg-white p-3 rounded-lg border border-violet-200 overflow-auto max-h-64 text-xs scrollbar-thin">
-              {JSON.stringify(invoiceData, null, 2)}
-            </pre>
-          </details>
-        </CardContent>
-      </Card>
-
-      {/* Success Message */}
-      <div className="text-center py-4 sm:py-6">
-        <p className="text-gray-600 mb-4">
-          Your invoice has been successfully prepared! Click "Generate Invoice" to create the final document.
-        </p>
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500">
-          <span>✓ Form validated</span>
-          <span>✓ Calculations verified</span>
-          <span>✓ Ready to export</span>
-        </div>
-      </div>
     </div>
   );
 }
