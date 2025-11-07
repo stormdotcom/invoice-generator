@@ -404,7 +404,8 @@ export async function completeWorkflow() {
 export async function batchProcessing(invoices: InvoiceData[]) {
   const results = [];
 
-  for (const [index, invoice] of invoices.entries()) {
+  for (let index = 0; index < invoices.length; index++) {
+    const invoice = invoices[index];
     try {
       console.log(`Processing invoice ${index + 1}/${invoices.length}`);
       

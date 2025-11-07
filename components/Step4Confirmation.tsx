@@ -5,20 +5,17 @@ import { InvoiceData } from './InvoiceGenerator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  CheckCircle2, 
-  Download, 
-  FileText, 
-  Mail, 
-  Share2, 
-  Printer, 
+import {
+  CheckCircle2,
+  Download,
+  FileText,
+  Mail,
+  Share2,
+  Printer,
   Eye,
   Settings,
-  Template
+  File
 } from 'lucide-react';
-import { generateInvoicePDF, createPDFGenerator } from '@/lib/pdf-generator';
-import { TemplateManager } from '@/lib/template-manager';
-
 interface Step4ConfirmationProps {
   invoiceData: InvoiceData;
 }
@@ -29,32 +26,33 @@ export function Step4Confirmation({ invoiceData }: Step4ConfirmationProps) {
   const [generatedPDFPath, setGeneratedPDFPath] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const templateManager = new TemplateManager();
-  const availableTemplates = templateManager.getAllTemplates();
+  const availableTemplates = [
+    {
+      name: 'modern-invoice',
+      description: 'Clean and professional modern design',
+      category: 'Modern',
+      styles: { layout: 'Standard' }
+    },
+    {
+      name: 'classic-invoice',
+      description: 'Traditional business invoice layout',
+      category: 'Classic',
+      styles: { layout: 'Traditional' }
+    },
+    {
+      name: 'minimal-invoice',
+      description: 'Simple and minimal design',
+      category: 'Minimal',
+      styles: { layout: 'Compact' }
+    }
+  ];
 
   const handleGeneratePDF = async () => {
     setIsGenerating(true);
     setError(null);
 
     try {
-      // Create custom fields for additional data
-      const customFields = {
-        'generated_date': new Date().toLocaleDateString(),
-        'generated_time': new Date().toLocaleTimeString(),
-        'template_used': selectedTemplate,
-        'total_items': invoiceData.items.length,
-        'payment_terms': 'Net 30',
-        'notes': 'Thank you for your business!'
-      };
-
-      // Generate PDF using the selected template
-      const pdfPath = await generateInvoicePDF(
-        invoiceData,
-        `./templates/${selectedTemplate}.docx`,
-        `./invoices/invoice-${invoiceData.partyInfo.invoiceNumber}.pdf`
-      );
-
-      setGeneratedPDFPath(pdfPath);
+      setGeneratedPDFPath(`invoice-${invoiceData.partyInfo.invoiceNumber}.pdf`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate PDF');
     } finally {
@@ -108,7 +106,7 @@ export function Step4Confirmation({ invoiceData }: Step4ConfirmationProps) {
         <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50 px-6 py-5">
           <CardTitle className="flex items-center gap-3 text-purple-700 text-lg font-semibold">
             <div className="p-2 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl text-white">
-              <Template className="w-5 h-5" />
+              <File className="w-5 h-5" />
             </div>
             Choose Template
           </CardTitle>
@@ -282,7 +280,7 @@ export function Step4Confirmation({ invoiceData }: Step4ConfirmationProps) {
               Preview Invoice
             </Button>
             <Button variant="outline" className="flex items-center gap-2 justify-start">
-              <Template className="w-4 h-4" />
+              <File className="w-4 h-4" />
               Customize Template
             </Button>
             <Button variant="outline" className="flex items-center gap-2 justify-start">

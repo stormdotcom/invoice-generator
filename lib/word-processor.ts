@@ -157,8 +157,8 @@ function extractPlaceholders(content: string): string[] {
   while ((match = placeholderRegex.exec(content)) !== null) {
     placeholders.push(match[1]);
   }
-  
-  return [...new Set(placeholders)]; // Remove duplicates
+
+  return Array.from(new Set(placeholders));
 }
 
 /**
@@ -218,14 +218,13 @@ export class AdvancedWordProcessor {
    * Process template with custom processors
    */
   async processWithCustomProcessors(data: Record<string, any>): Promise<Buffer> {
-    // Apply custom processors to data
     const processedData = { ...data };
-    
-    for (const [fieldName, processor] of this.customProcessors) {
+
+    this.customProcessors.forEach((processor, fieldName) => {
       if (processedData[fieldName] !== undefined) {
         processedData[fieldName] = processor(processedData[fieldName]);
       }
-    }
+    });
 
     return await processWordTemplate(this.templatePath, processedData);
   }

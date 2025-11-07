@@ -166,23 +166,7 @@ async function convertUsingNodeModules(
   docxBuffer: Buffer,
   options: PDFConversionConfig['options']
 ): Promise<Buffer> {
-  try {
-    // Try using docx-pdf or similar library
-    const { convertDocxToPdf } = await import('docx-pdf');
-    
-    return new Promise((resolve, reject) => {
-      convertDocxToPdf(docxBuffer, (error: any, result: Buffer) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  } catch (error) {
-    // If docx-pdf is not available, try puppeteer-based conversion
-    return await convertUsingPuppeteer(docxBuffer, options);
-  }
+  throw new Error('Node module conversion not available');
 }
 
 /**
@@ -192,35 +176,7 @@ async function convertUsingPuppeteer(
   docxBuffer: Buffer,
   options: PDFConversionConfig['options']
 ): Promise<Buffer> {
-  try {
-    const puppeteer = await import('puppeteer');
-    const browser = await puppeteer.default.launch({ headless: true });
-    const page = await browser.newPage();
-
-    // Convert DOCX to HTML first (simplified approach)
-    const htmlContent = await convertDocxToHTML(docxBuffer);
-    
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-
-    const pdfOptions = {
-      format: options.format || 'A4',
-      printBackground: true,
-      margin: options.margins || {
-        top: '1in',
-        right: '1in',
-        bottom: '1in',
-        left: '1in'
-      }
-    };
-
-    const pdfBuffer = await page.pdf(pdfOptions);
-    await browser.close();
-
-    return pdfBuffer;
-  } catch (error) {
-    console.error('Puppeteer conversion failed:', error);
-    throw error;
-  }
+  throw new Error('Puppeteer conversion not available');
 }
 
 /**
