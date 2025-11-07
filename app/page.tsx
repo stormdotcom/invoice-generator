@@ -77,7 +77,7 @@ export default function Home() {
                 </div>
               </div>
               <span className={`font-bold text-xl ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                InvoiceGen
+                Invo-Gen
               </span>
             </div>
 
